@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="Chinese">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="「论文翻译」," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Deep Alignment Network: A convolutional neural network for robust face alignmentAbstract​    本文，提出了一个基于深度神经网络结构的鲁棒人脸对齐方法Deep Alignment Network 深度对其网络（DAN）。DAN由多个阶段（stage）组成，每个stage会根据之前stage改善脸部landma">
+<meta name="keywords" content="「论文翻译」">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Deep Alignment Network 论文翻译">
+<meta property="og:url" content="http://yoursite.com/2018/09/30/Deep-Alignment-Network-翻译/index.html">
+<meta property="og:site_name" content="Liufn">
+<meta property="og:description" content="Deep Alignment Network: A convolutional neural network for robust face alignmentAbstract​    本文，提出了一个基于深度神经网络结构的鲁棒人脸对齐方法Deep Alignment Network 深度对其网络（DAN）。DAN由多个阶段（stage）组成，每个stage会根据之前stage改善脸部landma">
+<meta property="og:locale" content="Chinese">
+<meta property="og:updated_time" content="2018-11-01T09:45:52.866Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Deep Alignment Network 论文翻译">
+<meta name="twitter:description" content="Deep Alignment Network: A convolutional neural network for robust face alignmentAbstract​    本文，提出了一个基于深度神经网络结构的鲁棒人脸对齐方法Deep Alignment Network 深度对其网络（DAN）。DAN由多个阶段（stage）组成，每个stage会根据之前stage改善脸部landma">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/09/30/Deep-Alignment-Network-翻译/"/>
+
+
+
+
+
+  <title>Deep Alignment Network 论文翻译 | Liufn</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="Chinese">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Liufn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/30/Deep-Alignment-Network-翻译/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liufn">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Liufn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Deep Alignment Network 论文翻译</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-30T11:42:02+08:00">
+                2018-09-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Deep-Alignment-Network-A-convolutional-neural-network-for-robust-face-alignment"><a href="#Deep-Alignment-Network-A-convolutional-neural-network-for-robust-face-alignment" class="headerlink" title="Deep Alignment Network: A convolutional neural network for robust face alignment"></a>Deep Alignment Network: A convolutional neural network for robust face alignment</h1><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>​    本文，提出了一个基于深度神经网络结构的鲁棒人脸对齐方法Deep Alignment Network 深度对其网络（DAN）。DAN由多个阶段（stage）组成，每个stage会根据之前stage改善脸部landmarks的位置。我们在所有stage使用完整人脸，而不是一个局部（local patch）。</p>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>本文我们提出一个新的人脸矫正方法（DAN）来解决之前方法的缺点。<strong>它是基于一个多级神经网络，每个stage在之前的stage回更新新的landmarks，提高landmarks的准确性</strong>， 该算法每个stage的输入（除了第一个stage）是一个被规范化的标准姿势的人脸图片和一个在previous stage 学习到的图片。为了在人脸矫正的过程中使用完整的人脸，我们给每个stage的输入增加了一个landmark heatmap，同时是本文的创新点。</p>
+<p>landmark heatmap 是landmark 位置附近的高强度图像，其强度随着距离最近landmark的距离而减小。CNN利用heatmap推断landmark位置的正确性，从而对其进行改善。图1展示了我们方法的大纲。通过使用landmark heatmap，我们的方法在300W测试集上降低了72%的错误率。</p>
+<p>三方面工作：</p>
+<ol>
+<li>通过使用landmark heatmap，在stage之间传递关于landmark location的准确估计，这种改进使得我们的方法可以利用整个面部图像而不是局部图像，避免陷入局部最小值</li>
+<li>本文的面部对齐方法将300W私人测试集失败率降低了60%， 将300W公开测试集失败率降低了72%</li>
+<li>公开源代码和实验模型</li>
+</ol>
+<h2 id="Related-work"><a href="#Related-work" class="headerlink" title="Related work"></a>Related work</h2><p>$$<br>S_{t+1} = S_{t} + r_{t}(\phi(I, S_t))<br>$$</p>
+<p>​    St是第t次迭代的landmark location的估计</p>
+<p>​    rt是一个回归函数，通过从图像I的landmark location中提取的特征φ来更新返回至St。</p>
+<h2 id="Deep-Alignment-Network"><a href="#Deep-Alignment-Network" class="headerlink" title="Deep Alignment Network"></a>Deep Alignment Network</h2><h3 id="Deep-Alignment-Network-1"><a href="#Deep-Alignment-Network-1" class="headerlink" title="Deep Alignment Network"></a>Deep Alignment Network</h3><h3 id="Normalization-to-canonical-shape"><a href="#Normalization-to-canonical-shape" class="headerlink" title="Normalization to canonical shape"></a>Normalization to canonical shape</h3><h3 id="Landmark-heatmap"><a href="#Landmark-heatmap" class="headerlink" title="Landmark heatmap"></a>Landmark heatmap</h3><h3 id="Feature-image-layer"><a href="#Feature-image-layer" class="headerlink" title="Feature image layer"></a>Feature image layer</h3><h3 id="Training-procedure"><a href="#Training-procedure" class="headerlink" title="Training procedure"></a>Training procedure</h3><h2 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h2><p>4.2 为了评估在Menpo挑战测试数据评估提出的方法，我们向挑战提交了我们的结果，并从挑战组织者那里收到了误差分数。 Menpo测试数据不同于我们使用的其他数据集，因为它不包含任何可以用来初始化人脸对齐的边界框。 基于这个原因，我们决定使用两步脸部齐过程，其中第一步作为第二步的初始化。 第一步使用放置在图像中间的正方形初始化边框来执进行脸对齐，其大小设置为图像高度的百分比。 第二步获取第一步的结果，将landmark和图像转换为标准的脸型，在经过转换的地标周围创建一个边框。转换后的图像和bbox用作人脸对齐的输入。 然后应用逆变换得到原始图像的地标坐标。</p>
+<p>为了在第一步中确定包围盒的最佳大小，我们在Menpo测试集的一个小子集上运行DAN，以确定几个包围盒大小。 利用一种估计给定一组地标和一幅图像的人脸对准误差的方法，确定了最优尺寸。 该方法提取了每个landmark的HOG特征，并用线性模型估计了误差。该方法在300W训练集上进行岭回归训练。选择的边框大小是图像高度的46%。 </p>
+<h2 id="Conclusions"><a href="#Conclusions" class="headerlink" title="Conclusions"></a>Conclusions</h2><p>与最近提出的面部对齐方法相反，DAN基于整个面部图像执行面部对齐，这使得它在初始化和头部姿态的大变化上具有很强的鲁棒性。 使用完整的面部图像而不是在地标周围提取的局部patch是可能的，这多亏了新颖的地landmark heatmap，它可以传输DAN阶段之间的地标位置信息。 对两个具有挑战性的公开数据集进行的广泛评估表明，该方法显著提高了最先进的故障率超过70%。</p>
+<p><strong>three main contributions of this work are the following:</strong></p>
+<ol>
+<li>We introduce landmark heatmaps which transfer the information about current landmark location estimates between the stages of our method. This improvement allows our method to make use of the entire image of a face, instead of local patches, and avoid falling into local minima. </li>
+<li>The resulting robust face alignment method we pro- pose in this paper reduces the failure rate by 60% on the 300W private test set [22] and 72% on the 300-W public test set [22] compared to the state of the art. </li>
+<li>Finally, we publish both the source code of our imple- mentation of the proposed method and the models used in the experiments.</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/「论文翻译」/" rel="tag"># 「论文翻译」</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/30/Python-glob-glob/" rel="next" title="Python glob.glob()">
+                <i class="fa fa-chevron-left"></i> Python glob.glob()
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/10/27/LeetCode-Two-Sum/" rel="prev" title="LeetCode  --  Two Sum">
+                LeetCode  --  Two Sum <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Liufn</p>
+              <p class="site-description motion-element" itemprop="description">学习之余</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Deep-Alignment-Network-A-convolutional-neural-network-for-robust-face-alignment"><span class="nav-number">1.</span> <span class="nav-text">Deep Alignment Network: A convolutional neural network for robust face alignment</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Abstract"><span class="nav-number">1.1.</span> <span class="nav-text">Abstract</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Introduction"><span class="nav-number">1.2.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Related-work"><span class="nav-number">1.3.</span> <span class="nav-text">Related work</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Deep-Alignment-Network"><span class="nav-number">1.4.</span> <span class="nav-text">Deep Alignment Network</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Deep-Alignment-Network-1"><span class="nav-number">1.4.1.</span> <span class="nav-text">Deep Alignment Network</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Normalization-to-canonical-shape"><span class="nav-number">1.4.2.</span> <span class="nav-text">Normalization to canonical shape</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Landmark-heatmap"><span class="nav-number">1.4.3.</span> <span class="nav-text">Landmark heatmap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Feature-image-layer"><span class="nav-number">1.4.4.</span> <span class="nav-text">Feature image layer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Training-procedure"><span class="nav-number">1.4.5.</span> <span class="nav-text">Training procedure</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Experiments"><span class="nav-number">1.5.</span> <span class="nav-text">Experiments</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Conclusions"><span class="nav-number">1.6.</span> <span class="nav-text">Conclusions</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Liufn</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

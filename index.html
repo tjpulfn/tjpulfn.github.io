@@ -232,6 +232,859 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/27/centos7-安装cuda9-0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liufn">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Liufn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/27/centos7-安装cuda9-0/" itemprop="url">Centos7 安装cuda9.0和tensorflow1.9.0</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-27T15:35:48+08:00">
+                2018-11-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ol>
+<li><p>判断是否有gpu，并查看型号：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> lspci | grep -i nvidia</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看linux系统型号版本，是否支持：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> uname -m &amp;&amp; cat /etc/*release</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>验证是否安装gcc：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> gcc --version</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>确认系统是否安装the kernel headers and development packages ：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ uname -r</span><br><span class="line">3.10.0-862.14.4.el7.x86_64</span><br></pre></td></tr></table></figure>
+<p>进行安装(centos版本)：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo yum install kernel-devel-$(uname -r) kernel-headers-$(uname -r)</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>下载NVIDIA CUDA Toolkit:</p>
+<p><a href="http://developer.nvidia.com/cuda-downloads" target="_blank" rel="noopener">http://developer.nvidia.com/cuda-downloads</a></p>
+<p>历史版本地址：<a href="https://developer.nvidia.com/cuda-toolkit-archive" target="_blank" rel="noopener">https://developer.nvidia.com/cuda-toolkit-archive</a></p>
+<p>下载为runfile安装包</p>
+</li>
+<li><p>检查下载文件是否完整：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> md5sum &lt;file&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">7a00187b2ce5c5e350e68882f42dd507 cuda_9.0.176_384.81_linux.run</span><br><span class="line">be0f029e95881adc28cc31381207b522 cuda_cluster_pkgs_9.0.176_rhel6.tar.gz</span><br><span class="line">d0c6a642bd0f0367f90924704226e8c0 cuda_cluster_pkgs_9.0.176_rhel7.tar.gz</span><br><span class="line">95a0042baddd9a5a265e5266f45a5d17 cuda_cluster_pkgs_9.0.176_ubuntu1604.tar.gz</span><br><span class="line">d76d08b6da82e54326851d43435a0c61 cuda-repo-fedora25-9.0.176-1.x86_64.rpm</span><br><span class="line">a58a6f09f8a1d56f5e6da1d87460e867 cuda-repo-fedora25-9-0-local-9.0.176-1.x86_64.rpm</span><br><span class="line">918c8a71a00f89c5a733ef58011ad65c cuda-repo-opensuse422-9.0.176-1.x86_64.rpm</span><br><span class="line">91f5e497e119ac22d9dfa6af1a117b47 cuda-repo-opensuse422-9-0-local-9.0.176-1.x86_64.rpm</span><br><span class="line">4a1114e243d0e0908495d1ad6c92c239 cuda-repo-rhel6-9.0.176-1.x86_64.rpm</span><br><span class="line">43e548a51e3705dd51d21b9926208600 cuda-repo-rhel6-9-0-local-9.0.176-1.x86_64.rpm</span><br><span class="line">f9b8e8c0de6863e7cb1ca47c5d9b8589 cuda-repo-rhel7-9.0.176-1.ppc64le.rpm</span><br><span class="line">960afa71b11da89980990736c77e0495 cuda-repo-rhel7-9.0.176-1.x86_64.rpm</span><br><span class="line">8c9d14558cf63e077a61bf78a5bcfb2a cuda-repo-rhel7-9-0-local-9.0.176-1.ppc64le.rpm</span><br><span class="line">f78a97891c183c47b0cc187a76eaa715 cuda-repo-rhel7-9-0-local-9.0.176-1.x86_64.rpm</span><br><span class="line">dc2784693028df4855db8b31b3937c24 cuda-repo-sles122-9.0.176-1.x86_64.rpm</span><br><span class="line">c7a2664834c20cfe75f2d1956fc87ae8 cuda-repo-sles122-9-0-local-9.0.176-1.x86_64.rpm</span><br><span class="line">4b8004dd747dbb664e85b17dec3fee51 cuda-repo-ubuntu1604_9.0.176-1_amd64.deb</span><br><span class="line">70e7d1027e225043678e7150f7a6fd7b cuda-repo-ubuntu1604_9.0.176-1_ppc64el.deb</span><br><span class="line">e78e6ff56582f09a0cbc607049bdb2fd cuda-repo-ubuntu1604-9-0-local_9.0.176-1_amd64.deb</span><br><span class="line">405d20e594b87f44fb8ed3b137e88707 cuda-repo-ubuntu1604-9-0-local_9.0.176-1_ppc64el.deb</span><br><span class="line">3544486e0b99e633572a65bfb24058ed cuda-repo-ubuntu1704_9.0.176-1_amd64.deb</span><br><span class="line">d717d6649cbf90d32e3fd2c0c7202be0 cuda-repo-ubuntu1704-9-0-local_9.0.176-1_amd64.deb</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将之前安装的cuda，驱动，卸载：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo /usr/local.cuda-X.Y/bin/uninsatll_cuda_X.Y.pl</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo /usr/bin/nvidia-uninstall</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo yum remove &lt;package_name&gt;</span></span><br></pre></td></tr></table></figure>
+<p>package_name即为/usr/local/cuda          /usr/local/cuda-X.Y          /usr/cuda        /usr/cuda-X.Y</p>
+</li>
+<li><p>使用Package Manager 安装：</p>
+<p>…</p>
+</li>
+<li><p>Runfile Installation：</p>
+<ol>
+<li><p>查看安装前步骤</p>
+</li>
+<li><p>Disable the Nouveau drivers:</p>
+<p>首先查看Nouveau驱动是否被加载：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> lsmod | grep nouveau</span></span><br></pre></td></tr></table></figure>
+<p>如果有内容打印，说明被加载，则执行下面步骤(权限不足，请添加sudo)，如果没有内容打印，则略过：</p>
+<p>a. Create a file at /etc/modprobe.d/blacklist-nouveau.conf  </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vim /etc/modprobe.d/blacklist-nouveau.conf</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">blacklist nouveau</span><br><span class="line">options nouveau modeset=0</span><br></pre></td></tr></table></figure>
+<p>b. Regenerate the kernel initramfs</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo dracut --force</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Reboot into text mode(runlevel 3)</p>
+<p>可以修改文件/etc/inittab，之后进行重启：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo vim /etc/inittab</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># ADDING CONFIGURATION HERE WILL HAVE NO EFFECT ON YOUR SYSTEM.</span><br><span class="line"># Ctrl-Alt-Delete is handled by /usr/lib/systemd/system/ctrl-alt-del.target</span><br><span class="line"># systemd uses &apos;targets&apos; instead of runlevels. By default, there are two main targets:</span><br><span class="line"># multi-user.target: analogous to runlevel 3</span><br><span class="line"># graphical.target: analogous to runlevel 5</span><br><span class="line"># To view current default target, run:</span><br><span class="line"># systemctl get-default</span><br><span class="line"># To set a default target, run:</span><br><span class="line"># systemctl set-default TARGET.target</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>​    可以将<strong><em>multi-user.target: analogous to runlevel 3</em></strong>注释打开（我的理解）</p>
+<p>​    <strong>The CUDA driver cannot be installed while the Nouveau drivers are loaded or while the     graphical interface is active.</strong></p>
+<ol start="4">
+<li><p>正式安装CUDA之前要确保Nouveau已经卸载</p>
+</li>
+<li><p>安装：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo sh cuda_&lt;version&gt;_linux.run</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><p>环境变量：</p>
+<p>The <strong>PATH</strong> variable needs to include <strong>/usr/local/cuda-9.0/bin</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">export</span> PATH=/usr/<span class="built_in">local</span>/cuda-9.0/bin<span class="variable">$&#123;PATH:+:$&#123;PATH&#125;</span>&#125;</span></span><br></pre></td></tr></table></figure>
+<p>In addition, when using the runfile installation method, the <strong>LD_LIBRARY_PATH</strong> variable needs to contain <strong>/usr/local/cuda-9.0/lib64 on a 64-bit system</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">export</span> LD_LIBRARY_PATH=</span></span><br><span class="line">/usr/local/cuda-9.0/lib64$&#123;LD_LIBRARY_PATH:+:$&#123;LD_LIBRARY_PATH&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装tensorflow：</p>
+<ol>
+<li><p>安装python，pip，和virtualenv</p>
+<p>python2：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo yum update</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo yum install python-dev python-pip</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo pip install -U virtualenv</span></span><br></pre></td></tr></table></figure>
+<p>python3：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo yum update</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo yum install python3-dev python3-pip</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo pip3 install -U virtualenv</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置虚拟环境：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> virtualenv --system-site-packages -p python2.7 ./venv</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">source</span> ./venv/bin/activate</span></span><br><span class="line">(venv) $ pip install --upgrade pip</span><br><span class="line">(venv) $ pip list</span><br><span class="line">(venv) $ deactivate</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装tensorflow：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> (venv) $ pip install --upgrade tensorflow-gpu==1.9.0</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/22/pip-install-opencv/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liufn">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Liufn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/22/pip-install-opencv/" itemprop="url">Pip Install Opencv</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-22T17:35:32+08:00">
+                2018-11-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="pip安装opencv问题"><a href="#pip安装opencv问题" class="headerlink" title="pip安装opencv问题"></a>pip安装opencv问题</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pip install opencv_python</span></span><br></pre></td></tr></table></figure>
+<p>安装完opencv之后会出现如下错误</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> python</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import cv2</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File "&lt;stdin&gt;", line 1, in &lt;module&gt;</span><br><span class="line">  File "/home/vip/env/lib/python2.7/site-packages/cv2/__init__.py", line 3, in &lt;module&gt;</span><br><span class="line">    from .cv2 import *</span><br><span class="line">ImportError: libSM.so.6: cannot open shared object file: No such file or directory</span><br></pre></td></tr></table></figure>
+<p>缺少libSM.so.6，需要安装：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> yum whatprovides libSM.so.6</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">epel                                                                                                                                                                                                                       12707/12707</span><br><span class="line">libSM-1.2.2-2.el7.i686 : X.Org X11 SM runtime library</span><br><span class="line">源    ：base</span><br><span class="line">匹配来源：</span><br><span class="line">提供    ：libSM.so.6</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo yum install libSM-1.2.2-2.el7.x86_64 --<span class="built_in">setopt</span>=protected_multilib=<span class="literal">false</span></span></span><br></pre></td></tr></table></figure>
+<p>安装完毕</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> python</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import cv2</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File "&lt;stdin&gt;", line 1, in &lt;module&gt;</span><br><span class="line">  File "/home/vip/env/lib/python2.7/site-packages/cv2/__init__.py", line 3, in &lt;module&gt;</span><br><span class="line">    from .cv2 import *</span><br><span class="line">ImportError: libXrender.so.1: cannot open shared object file: No such file or directory</span><br></pre></td></tr></table></figure>
+<p>缺少libXrender.so.1，需要安装：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> yum whatprovides libXrender.so.1</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">libXrender-0.9.10-1.el7.i686 : X.Org X11 libXrender runtime library</span><br><span class="line">源    ：base</span><br><span class="line">匹配来源：</span><br><span class="line">提供    ：libXrender.so.1</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo yum install libXrender-0.9.10-1.el7.x86_64 --<span class="built_in">setopt</span>=protected_multilib=<span class="literal">false</span></span></span><br></pre></td></tr></table></figure>
+<p>ok, 继续</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> python</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import cv2</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File "&lt;stdin&gt;", line 1, in &lt;module&gt;</span><br><span class="line">  File "/home/vip/env/lib/python2.7/site-packages/cv2/__init__.py", line 3, in &lt;module&gt;</span><br><span class="line">    from .cv2 import *</span><br><span class="line">ImportError: libXext.so.6: cannot open shared object file: No such file or directory</span><br></pre></td></tr></table></figure>
+<p>缺少libXext.so.6，继续：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> yum whatprovides libXext.so.6</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">libXext-1.3.3-3.el7.i686 : X.Org X11 libXext runtime library</span><br><span class="line">源    ：base</span><br><span class="line">匹配来源：</span><br><span class="line">提供    ：libXext.so.6</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo yum install libXext-1.3.3-3.el7.x86_64 --<span class="built_in">setopt</span>=protected_multilib=<span class="literal">false</span></span></span><br></pre></td></tr></table></figure>
+<p>ok，导入opencv</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> python</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import cv2</span><br><span class="line">&gt;&gt;&gt; exit()</span><br></pre></td></tr></table></figure>
+<p>大功告成</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/27/LeetCode-Two-Sum/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liufn">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Liufn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/27/LeetCode-Two-Sum/" itemprop="url">LeetCode  --  Two Sum</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-27T18:11:26+08:00">
+                2018-10-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Given an array of integers, return <strong>indices</strong> of the two numbers such that they add up to a specific target.</p>
+<p>You may assume that each input would have <strong>exactly</strong> one solution, and you may not use the <em>same</em> element twice.</p>
+<p><strong>Example:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Given nums = [2, 7, 11, 15], target = 9,</span><br><span class="line"></span><br><span class="line">Because nums[0] + nums[1] = 2 + 7 = 9,</span><br><span class="line">return [0, 1].</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/30/Deep-Alignment-Network-翻译/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liufn">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Liufn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/30/Deep-Alignment-Network-翻译/" itemprop="url">Deep Alignment Network 论文翻译</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-30T11:42:02+08:00">
+                2018-09-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Deep-Alignment-Network-A-convolutional-neural-network-for-robust-face-alignment"><a href="#Deep-Alignment-Network-A-convolutional-neural-network-for-robust-face-alignment" class="headerlink" title="Deep Alignment Network: A convolutional neural network for robust face alignment"></a>Deep Alignment Network: A convolutional neural network for robust face alignment</h1><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>​    本文，提出了一个基于深度神经网络结构的鲁棒人脸对齐方法Deep Alignment Network 深度对其网络（DAN）。DAN由多个阶段（stage）组成，每个stage会根据之前stage改善脸部landmarks的位置。我们在所有stage使用完整人脸，而不是一个局部（local patch）。</p>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>本文我们提出一个新的人脸矫正方法（DAN）来解决之前方法的缺点。<strong>它是基于一个多级神经网络，每个stage在之前的stage回更新新的landmarks，提高landmarks的准确性</strong>， 该算法每个stage的输入（除了第一个stage）是一个被规范化的标准姿势的人脸图片和一个在previous stage 学习到的图片。为了在人脸矫正的过程中使用完整的人脸，我们给每个stage的输入增加了一个landmark heatmap，同时是本文的创新点。</p>
+<p>landmark heatmap 是landmark 位置附近的高强度图像，其强度随着距离最近landmark的距离而减小。CNN利用heatmap推断landmark位置的正确性，从而对其进行改善。图1展示了我们方法的大纲。通过使用landmark heatmap，我们的方法在300W测试集上降低了72%的错误率。</p>
+<p>三方面工作：</p>
+<ol>
+<li>通过使用landmark heatmap，在stage之间传递关于landmark location的准确估计，这种改进使得我们的方法可以利用整个面部图像而不是局部图像，避免陷入局部最小值</li>
+<li>本文的面部对齐方法将300W私人测试集失败率降低了60%， 将300W公开测试集失败率降低了72%</li>
+<li>公开源代码和实验模型</li>
+</ol>
+<h2 id="Related-work"><a href="#Related-work" class="headerlink" title="Related work"></a>Related work</h2><p>$$<br>S_{t+1} = S_{t} + r_{t}(\phi(I, S_t))<br>$$</p>
+<p>​    St是第t次迭代的landmark location的估计</p>
+<p>​    rt是一个回归函数，通过从图像I的landmark location中提取的特征φ来更新返回至St。</p>
+<h2 id="Deep-Alignment-Network"><a href="#Deep-Alignment-Network" class="headerlink" title="Deep Alignment Network"></a>Deep Alignment Network</h2><h3 id="Deep-Alignment-Network-1"><a href="#Deep-Alignment-Network-1" class="headerlink" title="Deep Alignment Network"></a>Deep Alignment Network</h3><h3 id="Normalization-to-canonical-shape"><a href="#Normalization-to-canonical-shape" class="headerlink" title="Normalization to canonical shape"></a>Normalization to canonical shape</h3><h3 id="Landmark-heatmap"><a href="#Landmark-heatmap" class="headerlink" title="Landmark heatmap"></a>Landmark heatmap</h3><h3 id="Feature-image-layer"><a href="#Feature-image-layer" class="headerlink" title="Feature image layer"></a>Feature image layer</h3><h3 id="Training-procedure"><a href="#Training-procedure" class="headerlink" title="Training procedure"></a>Training procedure</h3><h2 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h2><p>4.2 为了评估在Menpo挑战测试数据评估提出的方法，我们向挑战提交了我们的结果，并从挑战组织者那里收到了误差分数。 Menpo测试数据不同于我们使用的其他数据集，因为它不包含任何可以用来初始化人脸对齐的边界框。 基于这个原因，我们决定使用两步脸部齐过程，其中第一步作为第二步的初始化。 第一步使用放置在图像中间的正方形初始化边框来执进行脸对齐，其大小设置为图像高度的百分比。 第二步获取第一步的结果，将landmark和图像转换为标准的脸型，在经过转换的地标周围创建一个边框。转换后的图像和bbox用作人脸对齐的输入。 然后应用逆变换得到原始图像的地标坐标。</p>
+<p>为了在第一步中确定包围盒的最佳大小，我们在Menpo测试集的一个小子集上运行DAN，以确定几个包围盒大小。 利用一种估计给定一组地标和一幅图像的人脸对准误差的方法，确定了最优尺寸。 该方法提取了每个landmark的HOG特征，并用线性模型估计了误差。该方法在300W训练集上进行岭回归训练。选择的边框大小是图像高度的46%。 </p>
+<h2 id="Conclusions"><a href="#Conclusions" class="headerlink" title="Conclusions"></a>Conclusions</h2><p>与最近提出的面部对齐方法相反，DAN基于整个面部图像执行面部对齐，这使得它在初始化和头部姿态的大变化上具有很强的鲁棒性。 使用完整的面部图像而不是在地标周围提取的局部patch是可能的，这多亏了新颖的地landmark heatmap，它可以传输DAN阶段之间的地标位置信息。 对两个具有挑战性的公开数据集进行的广泛评估表明，该方法显著提高了最先进的故障率超过70%。</p>
+<p><strong>three main contributions of this work are the following:</strong></p>
+<ol>
+<li>We introduce landmark heatmaps which transfer the information about current landmark location estimates between the stages of our method. This improvement allows our method to make use of the entire image of a face, instead of local patches, and avoid falling into local minima. </li>
+<li>The resulting robust face alignment method we pro- pose in this paper reduces the failure rate by 60% on the 300W private test set [22] and 72% on the 300-W public test set [22] compared to the state of the art. </li>
+<li>Finally, we publish both the source code of our imple- mentation of the proposed method and the models used in the experiments.</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/30/Python-glob-glob/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liufn">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Liufn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/30/Python-glob-glob/" itemprop="url">Python glob.glob()</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-30T10:31:42+08:00">
+                2018-09-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">glob.glob(<span class="string">'*.txt'</span>)</span><br></pre></td></tr></table></figure>
+<p>获取当前目录下所有txt文件。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/20/facenet中的center-loss/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liufn">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Liufn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/20/facenet中的center-loss/" itemprop="url">Facenet中的center_loss</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-20T20:09:56+08:00">
+                2018-09-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/18/Mac使用hexo-Github-搭建博客/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -659,7 +1512,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -672,7 +1525,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>
